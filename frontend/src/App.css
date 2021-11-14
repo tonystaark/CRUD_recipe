@@ -1,0 +1,79 @@
+@import "~antd/dist/antd.css";
+
+/* Components - customPageHeader*/
+.site-page-header {
+  margin-bottom: 50px;
+}
+
+/* RECIPE LIST PAGE */
+.recipe-card {
+  cursor: pointer;
+}
+
+/* NEW RECIPE PAGE */
+
+@media screen and (min-width: 900px) {
+  .new-recipe-form {
+    max-width: 60%;
+  }
+}
+
+.instruction-field {
+  margin-bottom: 0;
+}
+
+.instruction-field .ant-space-item:first-child {
+  flex: 1;
+}
+
+.button-row .ant-form-item-control-input-content {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+  padding-top: 50px;
+}
+
+/* EDIT RECIPE PAGE */
+/* .edit-recipe-form {
+  max-width: 60%;
+} */
+/* APP */
+
+@media screen and (max-width: 575px) {
+  .main-layout {
+    padding: 20px 20px;
+  }
+}
+@media screen and (min-width: 576px) {
+  .main-layout {
+    padding: 30px 40px;
+  }
+}
+/* HOME PAGE */
+.home-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px 30px;
+}
+
+.home-page-content .anticon {
+  float: right;
+}
+
+@media screen and (min-width: 420px) {
+  .home-page-content {
+    flex-direction: row;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .page-content {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 420px) {
+  .page-content {
+    padding: 16px 24px;
+  }
+}
