@@ -1,4 +1,6 @@
 const express = require("express");
+const path = require("path");
+
 require("dotenv").config();
 const fileUpload = require("express-fileupload");
 
@@ -51,4 +53,8 @@ app.delete("/recipe/:recipeId", async (req, res) => {
 app.put("/recipe/:recipeId", async (req, res) => {
   res.send(await updateRecipe(req));
 });
-app.listen(port, () => console.log("listening on 4040"));
+app.listen(port, () => console.log(`listening on ${port}`));
+
+const buildPath = path.join(__dirname, "../frontend", "build");
+console.log("Build path", buildPath);
+app.use(express.static(buildPath));
