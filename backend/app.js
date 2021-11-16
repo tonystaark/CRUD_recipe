@@ -55,6 +55,6 @@ app.put("/recipe/:recipeId", async (req, res) => {
 });
 app.listen(port, () => console.log(`listening on ${port}`));
 
-const buildPath = path.join(__dirname, "../frontend", "build");
+const buildPath = path.join(__dirname, "..", "build");
 console.log("Build path", buildPath);
 app.use(express.static(buildPath));
