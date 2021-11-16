@@ -55,4 +55,8 @@ app.delete("/recipe/:recipeId", async (req, res) => {
 app.put("/recipe/:recipeId", async (req, res) => {
   res.send(await updateRecipe(req));
 });
+
+const buildPath = path.join(__dirname, "..", "build");
+app.use(express.static(buildPath));
+
 app.listen(port, () => console.log(`listening on ${port}`));
