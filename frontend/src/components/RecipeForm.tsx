@@ -1,10 +1,9 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Form, Input, Button, Space, Upload, FormInstance } from 'antd';
-import { MinusCircleOutlined, PlusOutlined, InboxOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
 import { IPostNewRecipeResponse, IImageAssets  } from '../apis/model';
 import { isEmpty } from '../../src/utils/conditionalCheck';
-import { UploadChangeParam } from 'antd/lib/upload/interface';
 import { removeImage } from '../apis/api';
 
 const formItemLayout = {
@@ -43,7 +42,11 @@ interface IFileList {
   uid: string,
   name: string,
   status: string,
-  url: string
+  url: string,
+  response?: {
+    publicId: string,
+    publicUrl: string
+  }
 }
 
 export const getExistingImage = (imageAssets?:  IImageAssets) => {
@@ -62,21 +65,16 @@ export const getExistingImage = (imageAssets?:  IImageAssets) => {
 }
 
 const removeImageHandler = (fileList: IFileList[], removeImageApiHandler:any, setImageStateHandler: (arg: IFileList[]) => void) =>
-  !isEmpty(fileList) && removeImageApiHandler(fileList[0].uid) && setImageStateHandler([...imageEmptyState]);
-
-const setImageHandler = (imageAssets: IImageAssets, setImageStateHandler: (arg: IFileList[]) => void)=> {
-  setImageStateHandler([...getExistingImage(imageAssets)])
-}
+  !isEmpty(fileList) && fileList[0].response && removeImageApiHandler(fileList[0].response.publicId) && setImageStateHandler([...imageEmptyState]);
 
 const RecipeForm = ({recipeData, isEdit, form, fileListStateHandling}: RecipeFormProps) => {
   
-  const [ isImageUpdated, setIsImageUpdated] = useState(false)
-  recipeData && form.setFieldsValue({...recipeData});
   const { fileList, setFileList} = fileListStateHandling;
-  const onChangeImage = (e: UploadChangeParam) => {
-    setIsImageUpdated(true);
+  const recipeClone = recipeData;
+  //@ts-ignore
+  const onChangeImage = ({ fileList: newFileList }) => {
     removeImageHandler(fileList,removeImage,setFileList);
-    e.file.status === 'done' && setImageHandler(e.file.response, setFileList)
+    setFileList(newFileList);
   };
 
     // @ts-ignore
@@ -97,7 +95,10 @@ const RecipeForm = ({recipeData, isEdit, form, fileListStateHandling}: RecipeFor
 
   return (
 
-      <Form form={form} name="dynamic_form_item" className={isEdit ? 'edit-recipe-form' : 'new-recipe-form'}>
+      <Form form={form} name="dynamic_form_item" 
+        className={isEdit ? 'edit-recipe-form' : 'new-recipe-form'}
+        initialValues={recipeClone}
+      >
         <Form.Item
             name="title"
             label="Recipe Name"
@@ -258,6 +259,7 @@ const RecipeForm = ({recipeData, isEdit, form, fileListStateHandling}: RecipeFor
               onPreview={onPreviewImage}
               accept={'image/*'}
               //@ts-ignore
+              fileList={fileList}
               maxCount={1}
             > 
               + Upload

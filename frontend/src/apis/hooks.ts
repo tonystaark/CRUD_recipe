@@ -68,10 +68,26 @@ const useUpdateRecipe = (
     }
 );
 
+const useDeleteImage = (
+  onSuccess?: (res:any) => void,
+  onError?: (err:any) => void,
+  onSettled?: (res: any) => void
+) =>  
+  useMutation(
+    [QUERY_KEYS.DELETE_IMAGE], 
+    (imageId: string) =>  removeImage(imageId), 
+    {
+      onSuccess,
+      onError,
+      onSettled,
+    }
+);
+
 export {
   useGetAllRecipes,
   useDeleteRecipe,
   useGetRecipe,
   useCreateRecipe,
-  useUpdateRecipe
+  useUpdateRecipe,
+  useDeleteImage
 }

@@ -15,25 +15,20 @@ const Recipes = () => {
   const navigate =  useNavigate();
   const queryClient = useQueryClient();
   const { data: allRecipes }  = useGetAllRecipes();
-  const [ recipeTitleDeleted, setRecipeTitleDeleted] = useState('')
   const deleteRecipe = useDeleteRecipe(
-    () => {
+    (res) => {
       //@ts-ignore
-      OpenNotificationWithIcon('success', recipeTitleDeleted, 'has been deleted')
+      OpenNotificationWithIcon('success', res.data.title, 'has been deleted')
       queryClient.invalidateQueries(QUERY_KEYS.GET_ALL_RECIPES)
     }, 
     () => {
       //@ts-ignore
-      openNotificationWithIcon('error', recipeTitleDeleted, 'failed to be deleted')
+      openNotificationWithIcon('error', res.title, 'failed to be deleted')
     },
-    () => {
-      setRecipeTitleDeleted('');
-    }
   );
 
-  const deleteRecipeHandler = (recipeId: string, recipeTitle: string) => {
-      setRecipeTitleDeleted(recipeTitle);
-    deleteRecipe.mutate(recipeId);
+  const deleteRecipeHandler = (recipeId: string) => {
+      deleteRecipe.mutate(recipeId);
   }
   return (
     <>
@@ -48,7 +43,7 @@ const Recipes = () => {
           allRecipes && allRecipes.length > 0 && allRecipes.map( (recipe:IPostNewRecipeResponse, idx: number) =>  
             <>
               <Col 
-              key={idx}
+              key={recipe._id}
               xs={{ span: 24 }}
               sm={{ span: 12 }}
               md={{ span: 6 }}
@@ -60,7 +55,7 @@ const Recipes = () => {
                   cover={<img alt="example" src={recipe.images?.publicUrl} onClick={() => navigate(`${recipe._id}`)}/>}
                   actions={[
                   <EditOutlined key="edit" onClick={() => navigate(`${recipe._id}`, { state: {isEdit: true}})} />,
-                  <DeleteOutlined key="delete" onClick={() => deleteRecipeHandler(recipe._id, recipe.title)}/>,
+                  <DeleteOutlined key="delete" onClick={() => deleteRecipeHandler(recipe._id)}/>,
                 ]}>
                   <Meta title={recipe.title}/>
                 

@@ -47,6 +47,8 @@ app.get("/recipe/:recipeId", async (req, res) => {
 });
 
 app.delete("/recipe/:recipeId", async (req, res) => {
+  const recipe = await getRecipe(req.params.recipeId);
+  await deleteFile(recipe.images.publicId);
   res.send(await deleteRecipe(req.params.recipeId));
 });
 
@@ -54,7 +56,3 @@ app.put("/recipe/:recipeId", async (req, res) => {
   res.send(await updateRecipe(req));
 });
 app.listen(port, () => console.log(`listening on ${port}`));
-
-const buildPath = path.join(__dirname, "../frontend", "build");
-console.log("Build path", buildPath);
-app.use(express.static(buildPath));

@@ -6,6 +6,7 @@ import { IPostNewRecipeResponse } from '../apis/model';
 import RecipeForm, { getExistingImage} from '../components/RecipeForm';
 import { useUpdateRecipe } from '../apis/hooks';
 import QUERY_KEYS from '../apis/keys';
+import OpenNotificationWithIcon from '../components/Notification';
 
 interface EditRecipeModalProps {
   visible: boolean;
@@ -21,24 +22,24 @@ const EditRecipeModal = ({visible, onSubmitAction, onCancelAction, recipeData}: 
     const [fileList, setFileList] = useState(getExistingImage(recipeData?.images));
     const updateRecipe = useUpdateRecipe(recipeId, 
       () => {
+        //@ts-ignore
+        OpenNotificationWithIcon('success', form.getFieldsValue().title, 'has been updated!')
         queryClient.invalidateQueries([QUERY_KEYS.GET_RECIPE, recipeId])
       }
       
     );
-    recipeData && form.setFieldsValue({...recipeData});
 
     const submitForm = () => {
-      console.log('getvalues',form.getFieldsValue())
       
       const formValues = {
         ...form.getFieldsValue(),
         images: {
-          publicId: fileList[0].uid,
-          publicUrl: fileList[0].url,
+          publicId: fileList[0].response?.publicId,
+          publicUrl: fileList[0].response?.publicUrl,
         }
       }
-      console.log('sendtoapi', formValues)
-      fileList && fileList[0].uid && fileList[0].url && updateRecipe.mutate(formValues)
+
+      fileList && fileList[0].status === 'done' && updateRecipe.mutate(formValues)
     }
 
     return (

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import CustomPageHeader from "../components/CustomPageHeader";
-import { Form, Input, Button, message, Space, Upload } from 'antd';
-import RecipeForm, { getExistingImage, imageEmptyState} from '../components/RecipeForm';
+import { Form, Button } from 'antd';
+import RecipeForm, { imageEmptyState} from '../components/RecipeForm';
 import { useCreateRecipe } from '../apis/hooks';
 import OpenNotificationWithIcon from '../components/Notification';
 
@@ -11,13 +11,14 @@ const NewRecipe = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const createRecipeMutation = useCreateRecipe(
-    () => {
+    (res) => {
+      navigate('/recipes')
       //@ts-ignore
-      OpenNotificationWithIcon('success', createRecipeMutation.data?.data.title, 'has been created')
+      OpenNotificationWithIcon('success', res.data.title, 'has been created')
     },
     () => {
       //@ts-ignore
-      OpenNotificationWithIcon('error', createRecipeMutation.data?.data.title, 'failed to be created')
+      OpenNotificationWithIcon('error', '', 'failed to be created')
     },
   );
   const [fileList, setFileList] = useState(imageEmptyState);
@@ -27,17 +28,15 @@ const NewRecipe = () => {
   }
   
   const submitForm = () => {
-    console.log('getvalues',form.getFieldsValue())
 
-     if (fileList.length > 0 && fileList[0].uid && fileList[0].url){
+     if (fileList  && fileList.length > 0 && fileList[0].status === 'done'){
         const formValues = {
           ...form.getFieldsValue(),
           images: {
-            publicId: fileList[0].uid,
-            publicUrl: fileList[0].url,
+            publicId: fileList[0].response?.publicId,
+            publicUrl: fileList[0].response?.publicUrl,
           }
         }
-        console.log('sendtoapi', formValues)
         createRecipeMutation.mutate(formValues)
       } else {
         //@ts-ignore

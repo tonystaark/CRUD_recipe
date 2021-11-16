@@ -24,8 +24,6 @@ const RecipeDetails = () => {
       key: 'amount',
     },
   ];
-  console.log('iSedut', isEdit)
-
 
   return (
     <>
